@@ -14,7 +14,6 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@Rollback(false)
 public class MemberRepositoryTest {
 
     @Autowired
@@ -22,6 +21,7 @@ public class MemberRepositoryTest {
 
     @Test
     @Transactional
+    @Rollback(false)
     public void testMember() throws Exception {
 
         // given
