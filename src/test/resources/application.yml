@@ -1,0 +1,24 @@
+# 테스트에서 스프링을 실행하면 이 설정 파일을 읽는다.
+# 만약 이 파일이 존재하지 않는 경우, src/resources/application.yml 을 읽는다.
+
+# 스프링부트는 datasource 설정이 없으면, 기본적으로 메모리 DB 를 사용하고, driver-class 도 현재 등록된 라이브러리를 보고 찾아준다.
+
+spring:
+#  datasource:
+#    url: jdbc:h2:mem:test
+#    username: sa
+#    password:
+#    driver-class-name: org.h2.Driver
+#
+#  jpa:
+#    hibernate:
+#      ddl-auto: create-drop # create-drop 모드 : 테스트가 끝나면 완전히 초기화
+#    properties:
+#      hibernate:
+##        show_sql: true
+#        format_sql: true
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
