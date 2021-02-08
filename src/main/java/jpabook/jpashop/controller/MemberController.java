@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 회원 등록 컨트롤러
@@ -54,5 +55,19 @@ public class MemberController {
         memberService.join(member);
 
         return "redirect:/";
+    }
+
+    /**
+     * 회원 목록 조회 페이지로 이동
+     * @param model
+     * @return
+     */
+    @GetMapping("/members")
+    public String list(Model model) {
+
+        List<Member> members = memberService.findMembers();
+        model.addAttribute("members", members);
+
+        return "members/memberList";
     }
 }
