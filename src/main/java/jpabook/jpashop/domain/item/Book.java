@@ -14,6 +14,6 @@ import javax.persistence.Entity;
 @DiscriminatorValue("B")
 public class Book extends Item {
 
-    private String Author;
+    private String author;
     private String isbn;
 }
