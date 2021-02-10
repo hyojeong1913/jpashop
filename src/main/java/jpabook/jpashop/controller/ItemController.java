@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
@@ -63,5 +65,59 @@ public class ItemController {
         model.addAttribute("items", items);
 
         return "items/itemList";
+    }
+
+    /**
+     * 상품 수정 페이지로 이동
+     * @param itemId
+     * @param model
+     * @return
+     */
+    @GetMapping("items/{itemId}/edit")
+    public String updateItemForm(@PathVariable("itemId") Long itemId, Model model) {
+
+        // 수정할 상품 조회
+        Book item = (Book) itemService.findOne(itemId);
+
+        BookForm form = new BookForm();
+
+        form.setId(item.getId());
+        form.setName(item.getName());
+        form.setPrice(item.getPrice());
+        form.setStockQuantity(item.getStockQuantity());
+        form.setAuthor(item.getAuthor());
+        form.setIsbn(item.getIsbn());
+
+        // 조회 결과를 모델에 담아서 뷰에 전달
+        model.addAttribute("form", form);
+
+        return "items/updateItemForm";
+    }
+
+    /**
+     * 상품 수정
+     *
+     * 컨트롤러에 파라미터로 넘어온 item 엔티티 인스턴스는 현재 준영속 상태이므로
+     * 영속성 컨텍스트의 지원을 받을 수 없고, 데이터를 수정해도 변경 감지 기능은 동작하지 않는다.
+     *
+     * @param itemId
+     * @param form
+     * @return
+     */
+    @PostMapping("items/{itemId}/edit")
+    public String updateItem(@PathVariable String itemId, @ModelAttribute("form") BookForm form) {
+
+        Book book = new Book();
+
+        book.setId(form.getId());
+        book.setName(form.getName());
+        book.setPrice(form.getPrice());
+        book.setStockQuantity(form.getStockQuantity());
+        book.setAuthor(form.getAuthor());
+        book.setIsbn(form.getIsbn());
+
+        itemService.saveItem(book);
+
+        return "redirect:/items";
     }
 }
