@@ -97,26 +97,30 @@ public class ItemController {
     /**
      * 상품 수정
      *
-     * 컨트롤러에 파라미터로 넘어온 item 엔티티 인스턴스는 현재 준영속 상태이므로
-     * 영속성 컨텍스트의 지원을 받을 수 없고, 데이터를 수정해도 변경 감지 기능은 동작하지 않는다.
+     * 트랜잭션이 있는 서비스 계층에 식별자(id)와 변경할 데이터를 명확하게 전달 (파라미터 OR DTO)
+     * 트랜잭션이 있는 서비스 계층에서 영속 상태의 엔티티를 조회하고 엔티티의 데이터를 직접 변경
+     * 트랜잭션 커밋 시점에 변경 감지 실행
      *
      * @param itemId
      * @param form
      * @return
      */
     @PostMapping("items/{itemId}/edit")
-    public String updateItem(@PathVariable String itemId, @ModelAttribute("form") BookForm form) {
+    public String updateItem(@PathVariable Long itemId, @ModelAttribute("form") BookForm form) {
 
-        Book book = new Book();
+//        Book book = new Book();
 
-        book.setId(form.getId());
-        book.setName(form.getName());
-        book.setPrice(form.getPrice());
-        book.setStockQuantity(form.getStockQuantity());
-        book.setAuthor(form.getAuthor());
-        book.setIsbn(form.getIsbn());
+//        book.setId(form.getId());
+//        book.setName(form.getName());
+//        book.setPrice(form.getPrice());
+//        book.setStockQuantity(form.getStockQuantity());
+//        book.setAuthor(form.getAuthor());
+//        book.setIsbn(form.getIsbn());
+//
+//        itemService.saveItem(book);
 
-        itemService.saveItem(book);
+        // 컨트롤러에서는 어설프게 엔티티 생성해서 사용하는 것은 좋지 않음.
+        itemService.updateItem(itemId, form.getName(), form.getPrice(), form.getStockQuantity());
 
         return "redirect:/items";
     }
