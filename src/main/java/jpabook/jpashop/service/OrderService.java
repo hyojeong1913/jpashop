@@ -8,6 +8,7 @@ import jpabook.jpashop.domain.item.Item;
 import jpabook.jpashop.repository.ItemRepository;
 import jpabook.jpashop.repository.MemberRepository;
 import jpabook.jpashop.repository.OrderRepository;
+import jpabook.jpashop.repository.OrderSearch;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +37,7 @@ public class OrderService {
     /**
      * 주문
      * 주문하는 회원 식별자, 상품 식별자, 주문 수량 정보를 받아서 실제 주문 엔티티를 생성한 후 저장
+     *
      * @param memberId
      * @param itemId
      * @param count
@@ -67,6 +69,7 @@ public class OrderService {
     /**
      * 주문 취소
      * 주문 식별자를 받아서 주문 엔티티를 조회한 후 주문 엔티티에 주문 취소를 요청
+     *
      * @param orderId
      */
     @Transactional
@@ -82,10 +85,11 @@ public class OrderService {
     /**
      * 주문 검색
      * OrderSearch 라는 검색 조건을 가진 객체로 주문 엔티티를 검색
+     *
      * @param orderSearch
      * @return
      */
-//    public List<Order> findOrders(OrderSearch orderSearch) {
-//        return orderRepository.findAll(orderSearch);
-//    }
+    public List<Order> findOrders(OrderSearch orderSearch) {
+        return orderRepository.findAllByString(orderSearch);
+    }
 }
