@@ -97,20 +97,6 @@ public class MemberApiController {
     }
 
     @Data
-    static class UpdateMemberRequest {
-
-        private String name;
-    }
-
-    @Data
-    @AllArgsConstructor
-    static class UpdateMemberResponse {
-
-        private Long id;
-        private String name;
-    }
-
-    @Data
     static class CreateMemberRequest {
 
         private String name;
@@ -124,5 +110,19 @@ public class MemberApiController {
         public CreateMemberResponse(Long id) {
             this.id = id;
         }
+    }
+
+    @Data
+    static class UpdateMemberRequest {
+
+        private String name;
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class UpdateMemberResponse {
+
+        private Long id;
+        private String name;
     }
 }
