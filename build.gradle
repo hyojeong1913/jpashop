@@ -30,6 +30,8 @@ dependencies {
 	// 유효성 검사를 위한 라이브러리
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5'
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
 	annotationProcessor 'org.projectlombok:lombok'

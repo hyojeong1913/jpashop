@@ -28,7 +28,7 @@ public class Member {
 
     // @JsonIgnore : API 응답 스펙을 맞추기 위해 로직이 추가되었음.
     //              (최악의 방법. api는 여러 개일 수 있으므로 api를 위한 프레젠테이션 응답 로직 추가 금지)
-//    @JsonIgnore
+    @JsonIgnore
     @OneToMany(mappedBy = "member")
     private List<Order> orders = new ArrayList<>();
 }
