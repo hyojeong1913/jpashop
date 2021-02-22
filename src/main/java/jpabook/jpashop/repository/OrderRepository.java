@@ -153,4 +153,17 @@ public class OrderRepository {
 //
 //        return member.name.like(nameCond);
 //    }
+
+    /**
+     * 엔티티를 페치 조인(fetch join)을 사용해서 쿼리 1번에 조회
+     *
+     * @return
+     */
+    public List<Order> findAllWithMemberDelivery() {
+
+        return em.createQuery("SELECT o FROM Order o" +
+                                        " JOIN FETCH o.member m" +
+                                        " JOIN FETCH o.delivery d", Order.class)
+                .getResultList();
+    }
 }
