@@ -55,7 +55,7 @@ public class OrderApiController {
 //            }
 
             // 위 반복문을 lambda 로 변경
-            orderItems.stream().forEach(o -> o.getItem().getName()); // Lazy 강제 초기
+            orderItems.stream().forEach(o -> o.getItem().getName()); // Lazy 강제 초기화
         }
 
         return all;

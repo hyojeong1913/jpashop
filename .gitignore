@@ -17,6 +17,11 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
+### Package Files ###
+*.jar
+*.war
+*.ear
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
