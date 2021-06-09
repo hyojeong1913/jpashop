@@ -93,6 +93,24 @@ public class OrderApiController {
         return result;
     }
 
+    /**
+     * 주문 조회 V3
+     * 엔티티를 DTO 로 변환 - fetch join 최적화
+     *
+     * fetch join 으로 SQL 이 1번만 실행됨.
+     *
+     * @return
+     */
+    @GetMapping("/api/v3/orders")
+    public List<OrderDto> ordersV3() {
+        List<Order> orders = orderRepository.findAllWithItem();
+        List<OrderDto> result = orders.stream()
+                .map(o -> new OrderDto(o))
+                .collect(Collectors.toList());
+
+        return result;
+    }
+
     @Getter
     static class OrderDto {
 

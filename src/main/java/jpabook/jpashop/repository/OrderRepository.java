@@ -160,10 +160,41 @@ public class OrderRepository {
      * @return
      */
     public List<Order> findAllWithMemberDelivery() {
+        return em.createQuery(
+                "SELECT o FROM Order o" +
+                    " JOIN FETCH o.member m" +
+                    " JOIN FETCH o.delivery d", Order.class
+        ).getResultList();
+    }
 
-        return em.createQuery("SELECT o FROM Order o" +
-                                        " JOIN FETCH o.member m" +
-                                        " JOIN FETCH o.delivery d", Order.class)
-                .getResultList();
+    /**
+     * fetch join 으로 SQL 이 1번만 실행됨.
+     *
+     * distinct 를 사용한 이유
+     * : 일대다 join 이 있으므로 데이터베이스 row 가 증가하며 그 결과 같은 order 엔티티의 조회 수도 증가하게 된다.
+     * : JPA 의 distinct 는 SQL 에 distinct 를 추가하고, 더해서 같은 엔티티가 조회되면, 애플리케이션에서 중복을 걸러준다.
+     * : 이 예에서 order 가 컬렉션 fetch join 때문에 중복 조회 되는 것을 막아준다.
+     *
+     * JPA 에서의 distinct 와 DB 에서의 distinct 의 차이점
+     * : DB 에서는 row 의 모든 값들이 동일해야만 중복이 제거되나, JPA 에서는 id(PK) 가 같은 경우 중복 제거를 해 준다.
+     *
+     * 단점 : 페이징이 불가능
+     *
+     * 컬렉션 fetch join
+     * : 컬렉션 fetch join 을 사용하면 페이징이 불가능하므로 매우 위험한 방법이다.
+     * : hibernate 는 경고 로그를 남기면서 모든 데이터를 DB 에서 읽어오고, 메모리에서 페이징 해버린다.
+     * : 컬렉션 fetch join 은 1개만 사용할 수 있다.
+     * : 데이터가 부정합하게 조회될 수 있어 컬렉션 둘 이상에 fetch join 을 사용하면 안 된다.
+     *
+     * @return
+     */
+    public List<Order> findAllWithItem() {
+        return em.createQuery(
+                "SELECT distinct o FROM Order o" +
+                    " JOIN FETCH o.member m" +
+                    " JOIN FETCH o.delivery d" +
+                    " JOIN FETCH o.orderItems oi" +
+                    " JOIN FETCH oi.item i", Order.class
+        ).getResultList();
     }
 }
