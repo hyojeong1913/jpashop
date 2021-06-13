@@ -4,6 +4,7 @@ import jpabook.jpashop.domain.Category;
 import jpabook.jpashop.exception.NotEnoughStockException;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.List;
 /**
  * 상품 엔티티
  */
+//@BatchSize(size = 100) // 개별 최적화 (엔티티는 엔티티 클래스에 적용)
 @Entity
 @Getter @Setter
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)

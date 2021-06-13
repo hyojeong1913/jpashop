@@ -197,4 +197,26 @@ public class OrderRepository {
                     " JOIN FETCH oi.item i", Order.class
         ).getResultList();
     }
+
+    /**
+     * 먼저 ToOne(OneToOne, ManyToOne) 관계를 모두 fetch join
+     * ToOne 관계는 row 수를 증가시키지 않으므로 페이징 쿼리에 영향을 주지 않는다.
+     *
+     * 컬렉션은 지연 로딩으로 조회
+     *
+     * 지연 로딩 성능 최적화를 위해 hibernate.default_batch_fetch_size, @BatchSize 를 적용
+     *
+     * @param offset
+     * @param limit
+     * @return
+     */
+    public List<Order> findAllWithMemberDelivery(int offset, int limit) {
+        return em.createQuery(
+                "SELECT o FROM Order o" +
+                        " JOIN FETCH o.member m" +
+                        " JOIN FETCH o.delivery d", Order.class)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
+    }
 }

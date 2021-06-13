@@ -9,6 +9,7 @@ import jpabook.jpashop.repository.OrderSearch;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
@@ -104,6 +105,47 @@ public class OrderApiController {
     @GetMapping("/api/v3/orders")
     public List<OrderDto> ordersV3() {
         List<Order> orders = orderRepository.findAllWithItem();
+        List<OrderDto> result = orders.stream()
+                .map(o -> new OrderDto(o))
+                .collect(Collectors.toList());
+
+        return result;
+    }
+
+    /**
+     * 주문 조회 V3.1
+     * 엔티티를 DTO로 변환 - 페이징과 한계 돌파
+     *
+     * ToOne(OneToOne, ManyToOne) 관계만 우선 모두 fetch join 으로 최적화
+     * 컬렉션 관계는 hibernate.default_batch_fetch_size, @BatchSize 로 최적화
+     *
+     * default_batch_fetch_size 옵션 (현재 application.yml 에 global 하게 설정되어 있음.)
+     * : 100 ~ 1000 사이를 선택하는 것을 권장
+     * : 이 전략을 SQL IN 절을 사용하는데, 데이터베이스에 따라 IN 절 파라미터를 1000 으로 제한하기도 한다.
+     * : 1000 으로 잡으면 한번에 1000 개를 DB 에서 애플리케이션에 불러오므로 DB 에 순간 부하가 증가할 수 있다.
+     * : 하지만 애플리케이션은 100 이든 1000 이든 결국 전체 데이터를 로딩해야 하므로 메모리 사용량이 같다.
+     * : 1000 으로 설정하는 것이 성능상 가장 좋지만, 결국 DB 든 애플리케이션이든 순간 부하를 어디까지 견딜 수 있는지로 결정하면 된다.
+     * : 장점)
+     * - 쿼리 호출 수가 1+N, 1+1 로 최적화된다.
+     * - join 보다 DB 데이터 전송량이 최적화 된다.
+     *   (Order 와 OrderItem 을 join 하면 Order 가 OrderItem 만큼 중복해서 조회되는데, 이 방법은 각각 조회하므로 전송해야할 중복 데이터가 없다.)
+     * - fetch join 방식과 비교해서 쿼리 호출 수가 약간 증가하지만, DB 데이터 전송량이 감소한다.
+     * - 컬렉션 fetch join 은 페이징이 불가능 하지만 이 방법은 페이징이 가능하다.
+     *
+     * 결론
+     * ToOne 관계는 fetch join 해도 페이징에 영향을 주지 않으므로,
+     * ToOne 관계는 fetch join 으로 쿼리 수를 줄이고 해결하고, 나머지는 hibernate.default_batch_fetch_size 로 최적화
+     *
+     * @param offset
+     * @param limit
+     * @return
+     */
+    @GetMapping("/api/v3.1/orders")
+    public List<OrderDto> ordersV3_page(
+            @RequestParam(value = "offset", defaultValue = "0") int offset,
+            @RequestParam(value = "limit", defaultValue = "100") int limit)
+    {
+        List<Order> orders = orderRepository.findAllWithMemberDelivery(offset, limit);
         List<OrderDto> result = orders.stream()
                 .map(o -> new OrderDto(o))
                 .collect(Collectors.toList());

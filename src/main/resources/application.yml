@@ -13,6 +13,7 @@ spring:
       hibernate:
 #        show_sql: true # System.out 에 하이버네이트 실행 SQL을 남긴다.
         format_sql: true
+        default_batch_fetch_size: 100 # 글로벌 설정 (컬렉션이나, 프록시 객체를 한꺼번에 설정한 size 만큼 IN 쿼리로 조회 가능)
 
 logging:
   level:
