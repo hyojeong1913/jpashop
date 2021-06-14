@@ -176,6 +176,22 @@ public class OrderApiController {
         return orderQueryRepository.findOrderQueryDtos();
     }
 
+    /**
+     * 주문 조회 V5
+     * JPA 에서 DTO 직접 조회 - 컬렉션 조회 최적화
+     *
+     * Query: 루트 1번, 컬렉션 1번
+     * ToOne 관계들을 먼저 조회하고, 여기서 얻은 식별자 orderId 로 ToMany 관계인 OrderItem 을 한꺼번에 조회
+     *
+     * MAP 을 사용해서 매칭 성능 향상 (O(1))
+     *
+     * @return
+     */
+    @GetMapping("/api/v5/orders")
+    public List<OrderQueryDto> ordersV5() {
+        return orderQueryRepository.findAllByDto_optimization();
+    }
+
     @Getter
     static class OrderDto {
 
