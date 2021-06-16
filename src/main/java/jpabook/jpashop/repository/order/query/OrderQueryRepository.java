@@ -54,6 +54,18 @@ public class OrderQueryRepository {
         return result;
     }
 
+    public List<OrderFlatDto> findAllByDto_flat() {
+        return em.createQuery(
+            "SELECT NEW jpabook.jpashop.repository.order.query.OrderFlatDto(o.id, m.name, o.orderDate, o.status,"
+                    + " d.address, i.name, oi.orderPrice, oi.count)"
+                    + " FROM Order o"
+                    + " JOIN o.member m"
+                    + " JOIN o.delivery d"
+                    + " JOIN o.orderItems oi"
+                    + " JOIN oi.item i", OrderFlatDto.class)
+                .getResultList();
+    }
+
     private Map<Long, List<OrderItemQueryDto>> findOrderItemMap(List<Long> orderIds) {
         List<OrderItemQueryDto> orderItems = em.createQuery(
             "SELECT new jpabook.jpashop.repository.order.query.OrderItemQueryDto(oi.order.id, i.name, oi.orderPrice, oi.count)"
